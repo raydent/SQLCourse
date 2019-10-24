@@ -40,9 +40,8 @@ DECLARE @num INT, @id INT, @id2 INT, @txt nvarchar(1000), @pow INT  --пункт 6
 set @txt = ''
 set @num = 1
 set @id = 1
-set @pow = 3
-set @id2 = 3
-SELECT @txt = @txt + CAST(coeff as nvarchar(5)) + '*x^' + CAST((pow1) as nvarchar(5)) + ' + ' 
+set @id2 = 4
+SELECT @txt = @txt + CAST((pow1) as nvarchar(5)) + '^x' + '*' + CAST(coeff as nvarchar(5)) + ' + ' 
 FROM(
 SELECT *
 FROM 
@@ -56,13 +55,39 @@ ON T1.pow = T2.pow2
 )AS T4
 WHERE coeff != 0
 )AS T5
-SELECT REVERSE(STUFF(REVERSE(@txt),1,2,''))
+SELECT REVERSE(REVERSE(STUFF(REVERSE(@txt),1,2,'')))
+
+SELECT @txt = @txt + CAST(coeff as nvarchar(5)) + '*x^' + CAST((pow1) as nvarchar(5)) + ' + ' 
 
 DECLARE @num INT, @id INT, @id2 INT, @txt nvarchar(1000), @pow INT  --пункт 7
 set @txt = ''
 set @num = 1
 set @id = 1
-set @pow = 3
-set @id2 = 3
+set @id2 = 2
+SELECT @txt = @txt + CAST(coeff as nvarchar(5)) + '*x^' + CAST((pow) as nvarchar(5)) + ' + ' 
+FROM
+(
+SELECT SUM(coeff) as coeff, pow as pow
+FROM
+(
+SELECT id as id, (ISNULL(coeff, 0) * ISNULL(coeff2, 0)) as coeff, (ISNULL(pow, 0) + ISNULL(pow2, 0)) as pow FROM
+(SELECT*
+FROM (SELECT * FROM Полиномы WHERE id = @id) AS T1 CROSS JOIN (SELECT coeff as coeff2, id as id2, pow as pow2 FROM Полиномы WHERE id = @id2) AS T2
+)AS T3
+)AS T4
+GROUP BY pow
+)AS T5
+WHERE coeff != 0
+ORDER BY pow desc
+SELECT REVERSE(STUFF(REVERSE(@txt),1,2,''))
 
- 
+
+ DECLARE @num INT, @id INT, @id2 INT, @txt nvarchar(1000), @pow INT  --пункт 7
+set @txt = ''
+set @num = 1
+set @id = 1
+set @pow = 3
+set @id2 = 2
+(SELECT*
+FROM (SELECT * FROM Полиномы WHERE id = @id) AS T1 CROSS JOIN (SELECT coeff as coeff2, id as id2, pow as pow2 FROM Полиномы WHERE id = @id2) AS T2
+)
