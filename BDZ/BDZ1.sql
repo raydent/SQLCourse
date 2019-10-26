@@ -95,12 +95,12 @@ SELECT REVERSE(STUFF(REVERSE(@txt),1,2,''))
 --
 
  --пункт 8
-DECLARE @num real, @id INT, @id2 INT, @sum INT
+DECLARE @num real, @id INT, @id2 INT, @sum real
 set @num = 2
 set @id = 3
 set @id2 = 2
 set @sum = 0
-SELECT @sum = @sum + coeff * cast(POWER(@num, pow) as INT)
+SELECT @sum = @sum + coeff * cast(POWER(@num, pow) as real)
 FROM Полиномы
 WHERE id = @id
 ORDER BY pow desc
@@ -108,20 +108,32 @@ SELECT @sum
 --
 
 --пункт 9
-DECLARE @id INT
+DECLARE @id INT, @maxpow real, @a real, @b real, @c real 
 set @id = 6
-SELECT 
-(CASE WHEN SUM(pow) = 3 
-AND (select coeff FROM Полиномы WHERE id = @id and pow = 2) * 2 * (select coeff FROM Полиномы where id = @id and pow = 0) =
-(select coeff FROM Полиномы where id = @id and pow = 1)
-THEN 
-	'YES' 
-ELSE 
-	'NO' 
-END)
+set @a = 0
+set @b = 0
+set @c = 0
+set @maxpow = 0
+SELECT @a = @a + (CASE WHEN pow = 2 THEN coeff ELSE 0 END),  
+@b = @b + (CASE WHEN pow = 1 THEN coeff ELSE 0 END),  
+@c = @c + (CASE WHEN pow = 0 THEN coeff ELSE 0 END),
+@maxpow = @maxpow + (CASE WHEN pow > @maxpow THEN pow - @maxpow ELSE 0 END)
 FROM
 Полиномы
-WHERE (id = @id)
+WHERE (id = @id) AND coeff != 0
+IF (@maxpow = 2)
+	IF(@c >= 0)
+		IF (@a > 0)
+			IF (2 * sqrt(@a) * sqrt(@c) = ABS(@b))
+				SELECT 'YES'
+			ELSE
+				SELECT 'NO'
+		ELSE
+			SELECT 'NO'
+	ELSE
+		SELECT 'NO'
+ELSE
+	SELECT 'NO'
 --
 
 --пункт 10
@@ -165,7 +177,7 @@ END)
 
 
 -- пункт 13
-DECLARE @id INT, @a INT, @b INT, @c INT, @D INT, @max INT
+DECLARE @id INT, @a real, @b real, @c real, @D real, @max INT
 set @id = 15
 set @a = 0
 set @b = 0
