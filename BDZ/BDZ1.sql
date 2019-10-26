@@ -198,3 +198,69 @@ IF (@max = 2)
 ELSE
 	SELECT 'NOT A 2nd POWER POLYNOM'
 --
+
+--пункт 14
+DECLARE @num INT, @idres INT, @id1multiplier INT, @id2multiplier INT, @txt nvarchar(1000), @pow INT, @firstpoly nvarchar(1000)
+set @txt = ''
+set @firstpoly = ''
+set @num = 1
+set @idres = 14
+set @id1multiplier = 13
+set @id2multiplier = 11
+SELECT @txt = @txt + CAST(coeff as nvarchar(5)) + '*x^' + CAST((pow) as nvarchar(5)) + ' + ' 
+FROM
+(
+	SELECT SUM(coeff) as coeff, pow as pow
+	FROM
+	(
+		SELECT id as id, (ISNULL(coeff, 0) * ISNULL(coeff2, 0)) as coeff, (ISNULL(pow, 0) + ISNULL(pow2, 0)) as pow FROM
+		(SELECT*
+		FROM 
+		(SELECT * FROM Полиномы WHERE id = @id1multiplier) AS T1 CROSS JOIN (SELECT coeff as coeff2, id as id2, pow as pow2 FROM Полиномы WHERE id = @id2multiplier) AS T2
+		)AS T3
+	)AS T4
+	GROUP BY pow
+)AS T5
+WHERE coeff != 0
+ORDER BY pow desc
+
+SELECT @firstpoly = @firstpoly + CAST(coeff as nvarchar(5)) + '*x^' + CAST(pow as nvarchar(5)) + ' + '
+FROM Полиномы
+WHERE id = @idres AND coeff != 0
+ORDER BY pow desc
+
+SELECT (CASE WHEN (REVERSE(STUFF(REVERSE(@txt),1,2,'')) = REVERSE(STUFF(REVERSE(@firstpoly),1,2,''))) THEN 1 ELSE 0 END)
+--
+
+--пункт 15
+DECLARE @num INT, @iddividend INT, @iddivider INT, @idquotient INT, @txt nvarchar(1000), @pow INT, @firstpoly nvarchar(1000)
+set @txt = ''
+set @firstpoly = ''
+set @num = 1
+set @iddividend = 14
+set @iddivider = 13
+set @idquotient = 11
+SELECT @txt = @txt + CAST(coeff as nvarchar(5)) + '*x^' + CAST((pow) as nvarchar(5)) + ' + ' 
+FROM
+(
+	SELECT SUM(coeff) as coeff, pow as pow
+	FROM
+	(
+		SELECT id as id, (ISNULL(coeff, 0) * ISNULL(coeff2, 0)) as coeff, (ISNULL(pow, 0) + ISNULL(pow2, 0)) as pow FROM
+		(SELECT*
+		FROM 
+		(SELECT * FROM Полиномы WHERE id = @iddivider) AS T1 CROSS JOIN (SELECT coeff as coeff2, id as id2, pow as pow2 FROM Полиномы WHERE id = @idquotient) AS T2
+		)AS T3
+	)AS T4
+	GROUP BY pow
+)AS T5
+WHERE coeff != 0
+ORDER BY pow desc
+
+SELECT @firstpoly = @firstpoly + CAST(coeff as nvarchar(5)) + '*x^' + CAST(pow as nvarchar(5)) + ' + '
+FROM Полиномы
+WHERE id = @iddividend AND coeff != 0
+ORDER BY pow desc
+
+SELECT (CASE WHEN (REVERSE(STUFF(REVERSE(@txt),1,2,'')) = REVERSE(STUFF(REVERSE(@firstpoly),1,2,''))) THEN 1 ELSE 0 END)
+--
