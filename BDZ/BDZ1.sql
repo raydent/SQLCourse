@@ -36,9 +36,8 @@ SELECT REVERSE(STUFF(REVERSE(@txt),1,2,''))
 --
 
 --пункт 5
-DECLARE @num INT, @id INT, @txt nvarchar(100), @pow INT
+DECLARE @id INT, @txt nvarchar(100), @pow INT
 set @txt = ''
-set @num = 1
 set @id = 5
 set @pow = 3
 SELECT TOP 1(CASE WHEN pow = @pow THEN 'YES' ELSE 'NO' END)
@@ -48,9 +47,8 @@ ORDER BY pow DESC
 --
 
 --пункт 6 
-DECLARE @num INT, @id INT, @id2 INT, @txt nvarchar(1000), @pow INT 
+DECLARE @id INT, @id2 INT, @txt nvarchar(1000), @pow INT 
 set @txt = ''
-set @num = 1
 set @id = 1
 set @id2 = 4
 SELECT @txt = @txt + CAST((pow1) as nvarchar(5)) + '^x' + '*' + CAST(coeff as nvarchar(5)) + ' + ' 
@@ -73,9 +71,8 @@ SELECT REVERSE(REVERSE(STUFF(REVERSE(@txt),1,2,'')))
 --
 
 --пункт 7
-DECLARE @num INT, @id INT, @id2 INT, @txt nvarchar(1000), @pow INT
+DECLARE @id INT, @id2 INT, @txt nvarchar(1000), @pow INT
 set @txt = ''
-set @num = 1
 set @id = 1
 set @id2 = 2
 SELECT @txt = @txt + CAST(coeff as nvarchar(5)) + '*x^' + CAST((pow) as nvarchar(5)) + ' + ' 
@@ -98,11 +95,9 @@ SELECT REVERSE(STUFF(REVERSE(@txt),1,2,''))
 --
 
  --пункт 8
-DECLARE @num INT, @id INT, @id2 INT, @txt nvarchar(1000), @pow INT, @sum INT
-set @txt = ''
+DECLARE @num real, @id INT, @id2 INT, @sum INT
 set @num = 2
 set @id = 3
-set @pow = 3
 set @id2 = 2
 set @sum = 0
 SELECT @sum = @sum + coeff * cast(POWER(@num, pow) as INT)
@@ -113,13 +108,8 @@ SELECT @sum
 --
 
 --пункт 9
-DECLARE @num INT, @id INT, @id2 INT, @txt nvarchar(1000), @pow INT, @sum INT
-set @txt = ''
-set @num = 2
+DECLARE @id INT
 set @id = 6
-set @pow = 3
-set @id2 = 2
-set @sum = 0
 SELECT 
 (CASE WHEN SUM(pow) = 3 
 AND (select coeff FROM Полиномы WHERE id = @id and pow = 2) * 2 * (select coeff FROM Полиномы where id = @id and pow = 0) =
@@ -135,7 +125,7 @@ WHERE (id = @id)
 --
 
 --пункт 10
-DECLARE @id INT, @max INT, @plus INT, @minus INT, @zero INT 
+DECLARE @id INT, @plus INT, @minus INT, @zero INT 
 set @id = 8
 set @zero = 0
 set @minus = 0
@@ -204,11 +194,10 @@ ELSE
 --
 
 --пункт 14
-DECLARE @num INT, @idres INT, @id1multiplier INT, @id2multiplier INT, @txt nvarchar(1000), @pow INT, @firstpoly nvarchar(1000)
+DECLARE @idresult INT, @id1multiplier INT, @id2multiplier INT, @txt nvarchar(1000), @pow INT, @firstpolynome nvarchar(1000)
 set @txt = ''
-set @firstpoly = ''
-set @num = 1
-set @idres = 14
+set @firstpolynome = ''
+set @idresult = 14
 set @id1multiplier = 13
 set @id2multiplier = 11
 SELECT @txt = @txt + CAST(coeff as nvarchar(5)) + '*x^' + CAST((pow) as nvarchar(5)) + ' + ' 
@@ -228,19 +217,18 @@ FROM
 WHERE coeff != 0
 ORDER BY pow desc
 
-SELECT @firstpoly = @firstpoly + CAST(coeff as nvarchar(5)) + '*x^' + CAST(pow as nvarchar(5)) + ' + '
+SELECT @firstpolynome = @firstpolynome + CAST(coeff as nvarchar(5)) + '*x^' + CAST(pow as nvarchar(5)) + ' + '
 FROM Полиномы
-WHERE id = @idres AND coeff != 0
+WHERE id = @idresult AND coeff != 0
 ORDER BY pow desc
 
-SELECT (CASE WHEN (REVERSE(STUFF(REVERSE(@txt),1,2,'')) = REVERSE(STUFF(REVERSE(@firstpoly),1,2,''))) THEN 1 ELSE 0 END)
+SELECT (CASE WHEN (REVERSE(STUFF(REVERSE(@txt),1,2,'')) = REVERSE(STUFF(REVERSE(@firstpolynome),1,2,''))) THEN 1 ELSE 0 END)
 --
 
 --пункт 15
-DECLARE @num INT, @iddividend INT, @iddivider INT, @idquotient INT, @txt nvarchar(1000), @pow INT, @dividendtxt nvarchar(1000)
+DECLARE @iddividend INT, @iddivider INT, @idquotient INT, @txt nvarchar(1000), @pow INT, @dividendtxt nvarchar(1000)
 set @txt = ''
 set @dividendtxt = ''
-set @num = 1
 set @iddividend = 14
 set @iddivider = 13
 set @idquotient = 11
