@@ -166,7 +166,7 @@ END)
 
 -- пункт 13
 DECLARE @id INT, @a INT, @b INT, @c INT, @D INT, @max INT
-set @id = 3
+set @id = 15
 set @a = 0
 set @b = 0
 set @c = 0
@@ -180,8 +180,8 @@ IF (@max = 2)
 		SELECT CAST((-@b / @a) as nvarchar(10)) + ' AND ' + CAST(0 as nvarchar(10))
 	ELSE
 		IF @b = 0
-			IF @c > 0
-				SELECT(CAST(SQRT(@c) as nvarchar(10)))
+			IF @c < 0
+				SELECT(CAST(SQRT(-@c) as nvarchar(10)) + ' AND ' + (CAST(-SQRT(-@c) as nvarchar(10))))
 			ELSE
 				SELECT 'NO ROOTS'
 		ELSE
