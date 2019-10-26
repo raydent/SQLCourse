@@ -153,16 +153,16 @@ SELECT @plus as plus, @minus as minus, @zero as zero
 -- пункт 11
 DECLARE @id INT
 set @id = 1
-SELECT (CASE WHEN (SELECT COUNT(coeff) FROM [Полиномы 1] WHERE id = @id AND CEILING(coeff) != FLOOR(coeff)) != 0 THEN 'NO' ELSE 'YES' END)
+SELECT (CASE WHEN (SELECT COUNT(coeff) FROM Полиномы WHERE id = @id AND CEILING(coeff) != FLOOR(coeff)) != 0 THEN 'NO' ELSE 'YES' END)
 --
 
 -- пункт 12
 DECLARE @id INT
 set @id = 4
 SELECT (CASE WHEN 
-(SELECT MAX(pow) FROM [Полиномы 1] WHERE id = @id and coeff != 0) = 1 
+(SELECT MAX(pow) FROM Полиномы  WHERE id = @id and coeff != 0) = 1 
 THEN 
-	CAST(ISNULL((SELECT coeff * (-1) FROM [Полиномы 1] WHERE id = @id AND pow = 0), 0) / (SELECT coeff FROM [Полиномы 1] WHERE id = @id AND pow = 1) 
+	CAST(ISNULL((SELECT coeff * (-1) FROM Полиномы WHERE id = @id AND pow = 0), 0) / (SELECT coeff FROM Полиномы WHERE id = @id AND pow = 1) 
 	as varchar(10))
 ELSE 
 	'NO'
@@ -179,7 +179,7 @@ set @c = 0
 set @max = 0
 SELECT @a = @a + (CASE WHEN pow = 2 THEN coeff ELSE 0 END), @b = @b + (CASE WHEN pow = 1 THEN coeff ELSE 0 END), @c = @c + (CASE WHEN pow = 0 THEN coeff ELSE 0 END),
 @D = @b * @b - 4 * @a * @c, @max = @max + (CASE WHEN pow > @max THEN pow - @max ELSE 0 END)
-FROM [Полиномы 1]
+FROM Полиномы
 WHERE id = @id
 IF (@max = 2)
 	IF @c = 0
