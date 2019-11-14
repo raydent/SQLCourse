@@ -133,7 +133,28 @@ ORDER BY T3.Покупатель_ID ASC, T6.Покупатель_ID ASC
 --
 
 
---пункт 8 - доделать
+--пункт 8 
+SELECT Покупатель_ID, Ранг as 'Рейтинг', T6.Траты
+FROM
+(SELECT SUM(Цена * Колво) as Траты, Покупатель_ID
+FROM
+Документы as T4
+INNER JOIN
+Документы_данные as T5
+ON T4.Ндок = T5.Ндок
+GROUP BY Покупатель_ID) as T6
+INNER JOIN
+(SELECT distinct Траты, RANK() OVER (ORDER BY Траты desc) as Ранг
+FROM
+(SELECT distinct SUM(ЦЕНА * КОЛВо) as Траты
+FROM
+Документы as T1
+INNER JOIN
+Документы_данные as T2
+ON T1.Ндок = T2.Ндок
+Group by Покупатель_ID) AS T3) as T7 
+ON T6.Траты = T7.Траты
+--
 
 --пункт 9
 SELECT*
@@ -152,7 +173,7 @@ ON T1.Ндок = T2.Ндок
 where MONTH(T1.Дата) = 11 AND YEAR(T1.Дата) = 2019)
 --
 
---пункт 10 CAST(SUM(КОЛВО) as float) / ISNULL(NULLIF(DATEDIFF(day, MIN(Дата), MAX(Дата)), 0), 1), Товар_id
+--пункт 10 
 SELECT CAST(SUM(ISNULL(КОЛВО, 0)) as float) / ISNULL(NULLIF(DATEDIFF(day, MIN(Дата), MAX(Дата)), 0), 1), T3.Товар_ID
 FROM
 Товары as T3
