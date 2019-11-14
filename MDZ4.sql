@@ -131,3 +131,38 @@ ON T3.Покупатель_ID != T6.Покупатель_ID
 WHERE T3.sum1 = T6.sum1 and T3.Покупатель_ID < T6.Покупатель_ID
 ORDER BY T3.Покупатель_ID ASC, T6.Покупатель_ID ASC
 --
+
+
+--пункт 8 - доделать
+
+--пункт 9
+SELECT*
+FROM 
+(SELECT Товар_Id 
+FROM
+Товары
+WHERE Остаток > 0) as T4
+UNION
+(SELECT T2.Товар_id
+FROM
+Документы as T1
+INNER JOIN
+Документы_данные as T2
+ON T1.Ндок = T2.Ндок
+where MONTH(T1.Дата) = 11 AND YEAR(T1.Дата) = 2019)
+--
+
+--пункт 10 CAST(SUM(КОЛВО) as float) / ISNULL(NULLIF(DATEDIFF(day, MIN(Дата), MAX(Дата)), 0), 1), Товар_id
+SELECT CAST(SUM(ISNULL(КОЛВО, 0)) as float) / ISNULL(NULLIF(DATEDIFF(day, MIN(Дата), MAX(Дата)), 0), 1), T3.Товар_ID
+FROM
+Товары as T3
+LEFT JOIN
+(SELECT T1.Дата, T2.Колво, T2.Товар_id
+FROM
+Документы as T1
+INNER JOIN
+Документы_данные as T2
+ON T1.Ндок = T2.Ндок) as T4
+ON T3.Товар_ID = T4.Товар_id
+GROUP BY T3.Товар_ID
+--
