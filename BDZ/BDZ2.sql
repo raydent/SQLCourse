@@ -265,13 +265,13 @@ END
 DECLARE @ndoc int
 SET @ndoc = 1338
 UPDATE Stock
-SET Qty_rsrv = Qty_rsrv + Данные.Сумма
+SET Qty_rsrv = Qty_rsrv + t2.summ
 FROM Stock INNER JOIN
 (
-    SELECT ndoc, Book_ID, SUM(Qty_ord) as Сумма
+    SELECT ndoc, Book_ID, SUM(Qty_ord) as summ
     FROM Orders_data
     GROUP BY Book_ID, ndoc
-) Данные ON Stock.Book_ID = Данные.Book_ID
+) t2 ON Stock.Book_ID = t2.Book_ID
 WHERE ndoc = @ndoc
 --
 
@@ -280,33 +280,33 @@ WHERE ndoc = @ndoc
 DECLARE @ndoc int
 SET @ndoc = 1338
 UPDATE Stock
-SET Qty_in_Stock = Qty_in_Stock - Данные.Сумма, Qty_rsrv = Qty_rsrv - Данные.Сумма
+SET Qty_in_Stock = Qty_in_Stock - t2.summ, Qty_rsrv = Qty_rsrv - t2.summ
 FROM Stock INNER JOIN
 (
-    SELECT ndoc, Book_ID, SUM(Qty_out) as Сумма
+    SELECT ndoc, Book_ID, SUM(Qty_out) as summ
     FROM Orders_data
     GROUP BY Book_ID, ndoc
-) Данные ON Stock.Book_ID = Данные.Book_ID
-WHERE ndoc = @ndoc AND Qty_in_Stock > Данные.Сумма AND Qty_rsrv > Данные.Сумма
+) t2 ON Stock.Book_ID = t2.Book_ID
+WHERE ndoc = @ndoc AND Qty_in_Stock >= t2.summ AND Qty_rsrv >= t2.summ
 --
 
 --пункт 15
 UPDATE Stock
-SET Qty_rsrv = Qty_rsrv - Данные.Сумма
+SET Qty_rsrv = Qty_rsrv - t2.summ
 FROM Stock INNER JOIN
 (
-	SELECT t1.ndoc, t1.Сумма, t1.Book_ID, t2.Pmnt_RUR, t2.Date_of_Order
+	SELECT t1.ndoc, t1.summ, t1.Book_ID, t2.Pmnt_RUR, t2.Date_of_Order
 	FROM
 	(
-		SELECT ndoc, Book_ID, SUM(Qty_ord - Qty_out) as Сумма
+		SELECT ndoc, Book_ID, SUM(Qty_ord - Qty_out) as summ
 		FROM Orders_data
 		GROUP BY Book_ID, ndoc
 	) t1
 	INNER JOIN
 	Orders t2
 	ON t1.ndoc = t2.ndoc
-) Данные ON Stock.Book_ID = Данные.Book_ID
-WHERE Pmnt_RUR = 0 AND DATEDIFF(day, Date_Of_order, GETDATE()) = 1 AND Сумма != 0
+) t2 ON Stock.Book_ID = t2.Book_ID
+WHERE Pmnt_RUR = 0 AND DATEDIFF(day, Date_Of_order, GETDATE()) = 1 AND summ != 0
 UPDATE Orders_data
 SET Qty_ord = 0
 FROM Orders_data t1 INNER JOIN
